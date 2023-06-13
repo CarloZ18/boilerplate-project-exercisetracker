@@ -4,12 +4,12 @@ const v1ExerciseTracker = require("./src/v1/routes/exerciseTrackerRoutes");
 const app = express();
 require("dotenv").config();
 
-app.use(bodyParser);
 app.use(cors);
+app.use(bodyParser);
 app.use(express.static("public"));
 app.use("/", v1ExerciseTracker);
 app.use("/api/users", v1ExerciseTracker);
-
+app.use("/api/users/:_id/exercises", v1ExerciseTracker);
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });

@@ -1,23 +1,53 @@
 const excersiceTrackerService = require("../services/exerciseTrackerService");
 
-const getAllUsers = (req, res) => {
+const indexController = (req, res) => {
   res.sendFile(process.cwd() + "/views/index.html");
 };
 
-const getUsers = async (req, res) => {
-  res.send(await excersiceTrackerService.getAllUsers());
+const getAllUsersController = async (req, res) => {
+  const allUsers = await excersiceTrackerService.getAllUsersService();
+  res.send(allUsers);
 };
 
-const addNewUser = async (req, res) => {
+const addNewUserController = async (req, res) => {
   const newUser = {
     username: req.body.username,
+    count: 0,
+    log: [{ description: "", duration: null, date: null }],
   };
-  const user = await excersiceTrackerService.addNewUser(newUser);
-  res.send = (user)
+  const user = await excersiceTrackerService.addNewUserService(newUser);
+  res.send({ username: user.username, _id: user._id });
 };
 
+const addNewExerciseController = async (req, res) => {
+  const exerciseData = {
+    id: req.body._id,
+    description: req.body.description,
+    duration: req.body.duration,
+    date: req.body.date,
+  };
+
+  const updatedUser = await excersiceTrackerService.addNewExerciseService(
+    exerciseData
+  );
+  res.send({
+    _id: updatedUser._id,
+    username: updatedUser.username,
+    date: updatedUser.log[updatedUser.log.length - 1].date,
+    duration: updatedUser.log[updatedUser.log.length - 1].duration,
+    description: updatedUser.log[updatedUser.log.length - 1].description,
+  });
+};
+
+const getAllExercisesController = async (req,res)=>{
+  const allExcercises = await excersiceTrackerService.getAllExercisesService(req.params._id)
+  res.send(allExcercises)
+}
+
 module.exports = {
-  getAllUsers,
-  getUsers,
-  addNewUser,
+  getAllUsersController,
+  indexController,
+  addNewUserController,
+  addNewExerciseController,
+  getAllExercisesController
 };
