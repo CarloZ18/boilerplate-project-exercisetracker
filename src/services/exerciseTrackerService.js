@@ -27,7 +27,7 @@ const addNewExerciseService = async (user) => {
   const newExercise = {
     description: user.description,
     duration: user.duration,
-    date: user.date !== null ? user.date : new Date.toString(),
+    date: user.date,
   };
   try {
     let userModify = await Users.findById(user.id);
