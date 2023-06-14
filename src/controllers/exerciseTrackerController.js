@@ -13,7 +13,7 @@ const addNewUserController = async (req, res) => {
   const newUser = {
     username: req.body.username,
     count: 0,
-    log: [{ description: "", duration: null, date: null }],
+    log: [],
   };
   const user = await excersiceTrackerService.addNewUserService(newUser);
   res.send({ username: user.username, _id: user._id });
@@ -31,23 +31,25 @@ const addNewExerciseController = async (req, res) => {
     exerciseData
   );
   res.send({
-    _id: updatedUser._id,
+    _id: exerciseData.id,
     username: updatedUser.username,
-    date: updatedUser.log[updatedUser.log.length - 1].date,
-    duration: updatedUser.log[updatedUser.log.length - 1].duration,
-    description: updatedUser.log[updatedUser.log.length - 1].description,
+    date: exerciseData.date,
+    duration: exerciseData.duration,
+    description: exerciseData.description,
   });
 };
 
-const getAllExercisesController = async (req,res)=>{
-  const allExcercises = await excersiceTrackerService.getAllExercisesService(req.params._id)
-  res.send(allExcercises)
-}
+const getAllExercisesController = async (req, res) => {
+  const allExcercises = await excersiceTrackerService.getAllExercisesService(
+    req.params._id
+  );
+  res.send(allExcercises);
+};
 
 module.exports = {
   getAllUsersController,
   indexController,
   addNewUserController,
   addNewExerciseController,
-  getAllExercisesController
+  getAllExercisesController,
 };

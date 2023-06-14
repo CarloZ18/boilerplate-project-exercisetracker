@@ -27,18 +27,11 @@ const addNewExerciseService = async (user) => {
   const newExercise = {
     description: user.description,
     duration: user.duration,
-    date: user.date,
+    date: user.date !== null ? user.date : new Date.toString(),
   };
   try {
     let userModify = await Users.findById(user.id);
-    if (userModify.count < 1) {
-      userModify.log[0].description = user.description;
-      userModify.log[0].duration = user.duration;
-      userModify.log[0].date =
-        user.date !== null ? user.date : new Date.toString();
-    } else {
-      userModify.log.push(newExercise);
-    }
+    userModify.log.push(newExercise);
     userModify.count++;
     userModify.save();
     return userModify;
@@ -48,7 +41,9 @@ const addNewExerciseService = async (user) => {
 };
 
 const getAllExercisesService = async (id) => {
-  return await Users.findById(id);
+  const user = await Users.findById(id);
+
+  return user;
 };
 module.exports = {
   getAllUsersService,
