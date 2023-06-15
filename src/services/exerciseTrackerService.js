@@ -2,7 +2,7 @@ const Users = require("../database/Users");
 
 const getAllUsersService = async () => {
   try {
-    const allUsers = await Users.find({});
+    const allUsers = await Users.find({}, { _id: 1, username: 1 });
     return allUsers;
   } catch (err) {
     console.log(err);
@@ -14,6 +14,7 @@ const addNewUserService = async (newUser) => {
     const findUser = await Users.find({ username: newUser.username });
     if (findUser.length < 1) {
       const newUserInDB = await Users.create(newUser);
+      newUserInDB.save();
       return newUserInDB;
     } else {
       return findUser[0];
@@ -42,7 +43,6 @@ const addNewExerciseService = async (user) => {
 
 const getAllExercisesService = async (id) => {
   const user = await Users.findById(id);
-
   return user;
 };
 module.exports = {
