@@ -11,9 +11,9 @@ mongoose.connect(
 );
 //Model
 const usersSchema = new mongoose.Schema({
-  username: String,
+  username: { type: String, required: true },
   count: Number,
-  log: [{ description: String, duration: Number, date: String }],
+  log: Array,
 });
 
 let Users = mongoose.model("Users", usersSchema);

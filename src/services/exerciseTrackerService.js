@@ -1,8 +1,9 @@
+const Exercises = require("../database/Exercises");
 const Users = require("../database/Users");
 
 const getAllUsersService = async () => {
   try {
-    const allUsers = await Users.find({}, { _id: 1, username: 1 });
+    const allUsers = await Users.find({}, { _id: 1, username: 1, _v: 1 });
     return allUsers;
   } catch (err) {
     console.log(err);
@@ -12,15 +13,12 @@ const getAllUsersService = async () => {
 const addNewUserService = async (newUser) => {
   try {
     const findUser = await Users.find({ username: newUser.username });
-    if (findUser.length < 1) {
-      const newUserInDB = await Users.create(newUser);
-      newUserInDB.save();
-      return newUserInDB;
-    } else {
-      return findUser[0];
-    }
+    const newUserInDB =
+      findUser.length < 1 ? await Users.create(newUser) : findUser[0];
+    newUserInDB.save();
+    return { username: newUserInDB.username, _id: newUserInDB._id };
   } catch (err) {
-    console.log(err);
+    return err.toString();
   }
 };
 
@@ -31,13 +29,26 @@ const addNewExerciseService = async (user) => {
     date: user.date,
   };
   try {
-    let userModify = await Users.findById(user.id);
-    userModify.log.push(newExercise);
+    const userModify = await Users.findById(user.id);
+    const addExercise = await Exercises.create(newExercise);
+    const { date, duration, description } = addExercise;
+    const { username, _id } = userModify;
+    userModify.log.push({
+      description: description,
+      duration: duration,
+      date: date,
+    });
     userModify.count++;
     userModify.save();
-    return userModify;
+    return {
+      _id: _id,
+      username: username,
+      date: date,
+      duration: duration,
+      description: description,
+    };
   } catch (err) {
-    console.log(err);
+    return err.toString();
   }
 };
 
