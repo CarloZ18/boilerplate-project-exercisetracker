@@ -54,7 +54,12 @@ const addNewExerciseService = async (user) => {
 
 const getAllExercisesService = async (id) => {
   const user = await Users.findById(id);
-  return user;
+  return {
+    _id: user.id,
+    username: user.username,
+    count: user.count,
+    log: user.log,
+  };
 };
 module.exports = {
   getAllUsersService,
