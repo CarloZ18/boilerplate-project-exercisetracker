@@ -30,7 +30,7 @@ const addNewExerciseService = async (user) => {
   };
   try {
     const userModify = await Users.findById(user.id);
-    const addExercise = await Exercises.create(newExercise);
+    
     const { date, duration, description } = addExercise;
     const { username, _id } = userModify;
     userModify.log.push({
@@ -38,6 +38,7 @@ const addNewExerciseService = async (user) => {
       duration: duration,
       date: date,
     });
+    const addExercise = await Exercises.create(userModify.log[userModify.log.length - 1]);
     userModify.count++;
     userModify.save();
     return {
