@@ -21,11 +21,11 @@ const addNewUserController = async (req, res) => {
 
 const addNewExerciseController = async (req, res) => {
   const exerciseData = {
-    id: req.body._id,
+    id: req.params._id,
     description: req.body.description,
     duration: req.body.duration,
     date:
-      req.body.date !== " "
+      req.body.date !== ""
         ? new Date(req.body.date).toDateString()
         : new Date().toDateString(),
   };
@@ -38,7 +38,8 @@ const addNewExerciseController = async (req, res) => {
 
 const getAllExercisesController = async (req, res) => {
   const allExcercises = await excersiceTrackerService.getAllExercisesService(
-    req.params._id
+    req.params._id,
+    req.query
   );
   res.send(allExcercises);
 };

@@ -11,8 +11,9 @@ mongoose.connect(
 );
 //Model
 const exercisesSchema = new mongoose.Schema({
+  user_id: { type: String, required: true },
   description: { type: String, required: true },
-  duration: { type: Number, min: 1, required: true },
+  duration: { type: Number, required: true },
   date: {
     type: String,
     validate: {
