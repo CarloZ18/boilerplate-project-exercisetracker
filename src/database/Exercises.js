@@ -15,12 +15,7 @@ const exercisesSchema = new mongoose.Schema({
   description: { type: String, required: true },
   duration: { type: Number, required: true },
   date: {
-    type: String,
-    validate: {
-      validator: function (v) {
-        return /^\w{3}\s\w{3}\s\d{2}\s\w{4}/gm.test(v);
-      },
-    },
+    type: Date,
     required: true,
   },
 });

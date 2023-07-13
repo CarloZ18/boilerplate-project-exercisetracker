@@ -12,8 +12,6 @@ mongoose.connect(
 //Model
 const usersSchema = new mongoose.Schema({
   username: { type: String, required: true },
-  count: Number,
-  log: Array,
 });
 
 let Users = mongoose.model("Users", usersSchema);

@@ -18,18 +18,9 @@ const addNewUserController = async (req, res) => {
 };
 
 const addNewExerciseController = async (req, res) => {
-  const exerciseData = {
-    id: req.params._id,
-    description: req.body.description,
-    duration: req.body.duration,
-    date:
-      req.body.date !== ""
-        ? new Date(req.body.date)
-        : new Date(),
-  };
-
   const updatedUser = await excersiceTrackerService.addNewExerciseService(
-    exerciseData
+    req.params._id,
+    req.body
   );
   res.send(updatedUser);
 };

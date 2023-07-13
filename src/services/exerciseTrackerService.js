@@ -26,24 +26,24 @@ const addNewUserService = async (newUser) => {
   }
 };
 
-const addNewExerciseService = async (user) => {
+const addNewExerciseService = async (id, exercise) => {
   try {
-    const userModify = await Users.findById(user.id);
-
+    const userModify = await Users.findById(id);
+    const { description, duration, date } = exercise;
     if (!userModify) {
       throw new Error("Could not find user");
     } else {
       const newExercise = new Exercises({
-        user_id: userModify.id,
-        description: user.description,
-        duration: user.duration,
-        date: user.date,
+        user_id: id,
+        description: description,
+        duration: duration,
+        date: date ? new Date(date) : new Date(),
       });
 
       userModify.save();
       const addExercise = await newExercise.save();
       return {
-        _id: userModify.id,
+        _id: id,
         username: userModify.username,
         date: new Date(addExercise.date).toDateString(),
         duration: addExercise.duration,
@@ -81,12 +81,12 @@ const getAllExercisesService = async (id, querys) => {
     const log = exercises.map((e) => ({
       description: e.description,
       duration: e.duration,
-      date: e.date,
+      date: new Date(e.date).toDateString(),
     }));
     return {
       username: user.username,
       count: exercises.length,
-      _id: user.id,
+      _id: id,
       log,
     };
   } catch (err) {
