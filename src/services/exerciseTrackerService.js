@@ -31,30 +31,21 @@ const addNewExerciseService = async (user) => {
     const userModify = await Users.findById(user.id);
 
     if (!userModify) {
-      throw new Error("Usuario no encontrado");
+      throw new Error("Could not find user");
     } else {
       const newExercise = new Exercises({
-        user_id: user.id,
+        user_id: userModify.id,
         description: user.description,
         duration: user.duration,
         date: user.date,
       });
 
-      const { user_id, description, duration, date } = newExercise;
-
-      userModify.log.push({
-        description,
-        duration,
-        date,
-      });
-
-      userModify.count++;
       userModify.save();
       const addExercise = await newExercise.save();
       return {
-        _id: user_id,
+        _id: userModify.id,
         username: userModify.username,
-        date: addExercise.date,
+        date: new Date(addExercise.date).toDateString(),
         duration: addExercise.duration,
         description: addExercise.description,
       };
@@ -65,38 +56,42 @@ const addNewExerciseService = async (user) => {
 };
 
 const getAllExercisesService = async (id, querys) => {
-  const { from, to, limit } = querys;
-  const user = await Users.findById(id);
-  if (!user) {
-    return "Could not find user";
-  }
-  let dateObj = {};
-  if (from) {
-    dateObj["$gte"] = new Date(from);
-  }
-  if (to) {
-    dateObj["$lte"] = new Date(to);
-  }
-  let filter = {
-    user_id: id,
-  };
-  if (from || to) {
-    filter.date = dateObj;
-  }
+  try {
+    const { from, to, limit } = querys;
+    const user = await Users.findById(id);
+    if (!user) {
+      ("Could not find user");
+    }
+    let dateObj = {};
+    if (from) {
+      dateObj["$gte"] = new Date(from);
+    }
+    if (to) {
+      dateObj["$lte"] = new Date(to);
+    }
+    let filter = {
+      user_id: id,
+    };
+    if (from || to) {
+      filter.date = dateObj;
+    }
 
-  const exercises = await Exercises.find(filter).limit(+limit ?? 500);
+    const exercises = await Exercises.find(filter).limit(+limit ?? 500);
 
-  const log = exercises.map((e) => ({
-    description: e.description,
-    duration: e.duration,
-    date: e.date,
-  }));
-  return {
-    _id: user.id,
-    username: user.username,
-    count: user.count,
-    log,
-  };
+    const log = exercises.map((e) => ({
+      description: e.description,
+      duration: e.duration,
+      date: e.date,
+    }));
+    return {
+      username: user.username,
+      count: exercises.length,
+      _id: user.id,
+      log,
+    };
+  } catch (err) {
+    return err.toString();
+  }
 };
 module.exports = {
   getAllUsersService,
